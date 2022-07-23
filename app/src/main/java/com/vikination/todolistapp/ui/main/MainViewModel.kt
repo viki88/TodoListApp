@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(var todosRepository: TodosRepository) :ViewModel(){
+class MainViewModel @Inject constructor(private var todosRepository: TodosRepository) :ViewModel(){
 
     private val todoListLiveData = MutableLiveData<List<Todo>>()
 

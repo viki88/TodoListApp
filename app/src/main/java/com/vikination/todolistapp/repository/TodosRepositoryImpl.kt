@@ -4,7 +4,7 @@ import com.vikination.todolistapp.framework.room.dao.TodoDAO
 import com.vikination.todolistapp.models.Todo
 import javax.inject.Inject
 
-class TodosRepositoryImpl @Inject constructor (var todoDAO: TodoDAO) :TodosRepository{
+class TodosRepositoryImpl @Inject constructor (private var todoDAO: TodoDAO) :TodosRepository{
 
     override suspend fun addNewTodo(todo: Todo) = todoDAO.addTodo(todo)
 

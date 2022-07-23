@@ -13,9 +13,10 @@ import com.vikination.todolistapp.databinding.ItemTodolistBinding
 import com.vikination.todolistapp.databinding.LayoutPopupMoreOptionTodolistBinding
 import com.vikination.todolistapp.models.Todo
 
-class ListTodoAdapter(var context: Context, var onChangeTodoListener: OnChangeTodoListener) :ListAdapter<Todo, ListTodoAdapter.TodoViewHolder>(DIFFUTILS){
+class ListTodoAdapter(private var context: Context,
+                      var onChangeTodoListener: OnChangeTodoListener) :ListAdapter<Todo, ListTodoAdapter.TodoViewHolder>(DIFFUTILS){
 
-    var popupMenu :PopupWindow? = null
+    private var popupMenu :PopupWindow? = null
 
     inner class TodoViewHolder(private var binding :ItemTodolistBinding) :RecyclerView.ViewHolder(binding.root){
 

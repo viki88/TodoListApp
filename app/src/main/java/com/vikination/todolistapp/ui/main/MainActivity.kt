@@ -1,7 +1,9 @@
 package com.vikination.todolistapp.ui.main
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.vikination.todolistapp.databinding.ActivityMainBinding
@@ -23,6 +25,7 @@ class MainActivity : AppCompatActivity(), OnChangeTodoListener {
 
         setupObservable()
         setupView()
+        viewModel.loadAllTodoList()
     }
 
     private fun setupView(){
@@ -40,8 +43,20 @@ class MainActivity : AppCompatActivity(), OnChangeTodoListener {
         editTodoDialog.show(supportFragmentManager, "Edit Dialog")
     }
 
+    private fun showDeleteConfirmationTodoDialog(todo: Todo){
+        AlertDialog.Builder(this)
+            .setTitle("Delete Todo")
+            .setMessage("Are you sure want to delete \"${todo.todo}\" ?")
+            .setPositiveButton("Yes"){ dialog,_ ->
+                dialog.dismiss()
+                viewModel.deleteAndRefresh(todo)
+            }.setNegativeButton("No"){ dialog, _ ->
+                dialog.dismiss()
+            }.create().show()
+    }
+
     private fun setupList(){
-        listAdapter = ListTodoAdapter(this)
+        listAdapter = ListTodoAdapter(this, this)
         binding.rvTodos.adapter = listAdapter
         binding.rvTodos.layoutManager = LinearLayoutManager(this)
     }
@@ -49,12 +64,13 @@ class MainActivity : AppCompatActivity(), OnChangeTodoListener {
     private fun setupObservable(){
         viewModel.observeTodoList().observe(this){
             listAdapter.submitList(it.sortedBy { todo -> todo.isChecked })
+            showEmptyText(it.isEmpty())
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.loadAllTodoList()
+    private fun showEmptyText(show :Boolean){
+        binding.emptyLayout.root.visibility = if (show) View.VISIBLE else View.GONE
+        binding.rvTodos.visibility = if (show) View.GONE else View.VISIBLE
     }
 
     override fun onDoUpdateTodo(todo: Todo) {
@@ -63,6 +79,14 @@ class MainActivity : AppCompatActivity(), OnChangeTodoListener {
 
     override fun onDoAddTodo(todo: Todo) {
         viewModel.addAnRefresh(todo)
+    }
+
+    override fun onDoEditTodo(todo: Todo) {
+        showEditTodoDialog(todo)
+    }
+
+    override fun onDoDeleteTodo(todo: Todo) {
+        showDeleteConfirmationTodoDialog(todo)
     }
 
 }

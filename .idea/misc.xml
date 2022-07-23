@@ -7,6 +7,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.31614583333333335" />
         <entry key="app/src/main/res/layout/item_todolist.xml" value="0.31614583333333335" />
         <entry key="app/src/main/res/layout/layout_fragment_update_todo.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/layout_popup_more_option_todolist.xml" value="0.2015625" />
       </map>
     </option>
   </component>

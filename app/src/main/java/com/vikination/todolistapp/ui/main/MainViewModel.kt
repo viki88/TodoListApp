@@ -24,6 +24,15 @@ class MainViewModel @Inject constructor(var todosRepository: TodosRepository) :V
         loadAllTodoList().join()
     }
 
+    fun deleteAndRefresh(todo: Todo) = viewModelScope.launch {
+        deleteTodo(todo).join()
+        loadAllTodoList().join()
+    }
+
+    private fun deleteTodo(todo: Todo) = viewModelScope.launch {
+        todosRepository.deleteTodo(todo)
+    }
+
     private fun addTodo(todo: Todo) = viewModelScope.launch {
         todosRepository.addNewTodo(todo)
     }

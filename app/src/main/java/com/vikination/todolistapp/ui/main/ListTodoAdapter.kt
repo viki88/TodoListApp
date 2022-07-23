@@ -1,21 +1,31 @@
 package com.vikination.todolistapp.ui.main
 
+import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupWindow
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.vikination.todolistapp.databinding.ItemTodolistBinding
+import com.vikination.todolistapp.databinding.LayoutPopupMoreOptionTodolistBinding
 import com.vikination.todolistapp.models.Todo
 
-class ListTodoAdapter(var onCheckedTodoListener: OnChangeTodoListener) :ListAdapter<Todo, ListTodoAdapter.TodoViewHolder>(DIFFUTILS){
+class ListTodoAdapter(var context: Context, var onChangeTodoListener: OnChangeTodoListener) :ListAdapter<Todo, ListTodoAdapter.TodoViewHolder>(DIFFUTILS){
+
+    var popupMenu :PopupWindow? = null
 
     inner class TodoViewHolder(private var binding :ItemTodolistBinding) :RecyclerView.ViewHolder(binding.root){
 
         fun bind(todo :Todo){
+            binding.todoMore.setOnClickListener {
+                showMoreOptionPopupDialog(todo, it)
+            }
             binding.cbTodo.setOnCheckedChangeListener { _, b ->
                 todo.isChecked = b
-                onCheckedTodoListener.onDoUpdateTodo(todo)
+                onChangeTodoListener.onDoUpdateTodo(todo)
             }
             binding.labelTodo.text = todo.todo
             binding.cbTodo.isChecked = todo.isChecked
@@ -31,6 +41,28 @@ class ListTodoAdapter(var onCheckedTodoListener: OnChangeTodoListener) :ListAdap
         holder.bind(getItem(position))
     }
 
+    private fun showMoreOptionPopupDialog(todo: Todo,anchor :View){
+        if (popupMenu == null) popupMenu = PopupWindow(context)
+        val viewMenu = LayoutPopupMoreOptionTodolistBinding.inflate(LayoutInflater.from(context))
+        viewMenu.btnEdit.setOnClickListener {
+            popupMenu?.dismiss()
+            onChangeTodoListener.onDoEditTodo(todo)
+        }
+        viewMenu.btnDelete.setOnClickListener {
+            popupMenu?.dismiss()
+            onChangeTodoListener.onDoDeleteTodo(todo)
+        }
+        popupMenu?.contentView = viewMenu.root
+        popupMenu?.isOutsideTouchable = true
+        popupMenu?.setBackgroundDrawable(ContextCompat.getDrawable(context, android.R.color.white))
+        popupMenu?.elevation = 20F
+        popupMenu?.let {
+            if (it.isShowing) popupMenu?.dismiss()
+            popupMenu?.showAsDropDown(anchor)
+        }
+
+    }
+
     companion object{
         var DIFFUTILS = object :DiffUtil.ItemCallback<Todo>(){
             override fun areItemsTheSame(oldItem: Todo, newItem: Todo): Boolean {
@@ -43,4 +75,6 @@ class ListTodoAdapter(var onCheckedTodoListener: OnChangeTodoListener) :ListAdap
 
         }
     }
+
+
 }

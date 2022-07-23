@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">TodolistApp</string>
     <string name="todo">Todo</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="empty_text_todolist">List Todo is Empty. \nAdd new Todo using + Button below.</string>
 </resources>
